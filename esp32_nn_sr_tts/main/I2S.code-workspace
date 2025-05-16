@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"i2s.h": "c",
+			"stdio.h": "c",
+			"esp_partition.h": "c",
+			"esp_tts.h": "c"
+		}
+	}
+}

@@ -1,0 +1,6 @@
+{
+    "cmake.sourceDirectory": "/media/taylor/Acer/Users/yhl/Desktop/Cyberry_Potter_Electromagic_Wand-main/Cyberry_Potter_Electromagic_Wand-main/Software/CNN/track",
+    "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+        "clang-diagnostic-error"
+    ]
+}
