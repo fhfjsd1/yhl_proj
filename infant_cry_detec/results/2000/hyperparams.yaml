@@ -1,0 +1,243 @@
+# Generated 2025-02-14 from:
+# /home/taylor/UrbanSound8k/SoundClassification/hparams/train_resnet.yaml
+# yamllint disable
+# run：
+# /home/taylor/anaconda3/bin/python /home/taylor/UrbanSound8k/SoundClassification/train_resnet.py /home/taylor/UrbanSound8k/SoundClassification/hparams/train_resnet.yaml
+
+# Seed needs to be set at top of yaml, before objects with parameters are made
+seed: 2000
+__set_seed: !apply:speechbrain.utils.seed_everything [2000]
+
+# Set up folders for reading from and writing to
+# Dataset must already exist at `audio_data_folder`
+data_folder: SoundClassification/data
+data_folder_noise: SoundClassification/data/noise # The noisy sequences for data augmentation will automatically be downloaded here.
+data_folder_rir: SoundClassification/data/rir # The impulse responses used for data augmentation will automatically be downloaded here.
+audio_data_folder: SoundClassification/data/audio # The folder containing the audio files
+# TODO the following folder will contain the resampled audio files (mono channel and config SR) to train on
+# resampled_audio_data_folder: !ref <data_folder>/audio_mono16kHz
+output_folder: ./results/2000
+save_folder: ./results/2000/save
+train_log: ./results/2000/train_log.txt
+csv_name: all28479.csv
+
+# Data for augmentation
+RIR_DATASET_URL: 
+  https://www.dropbox.com/scl/fi/linhy77c36mu10965a836/RIRs.zip?rlkey=pg9cu8vrpn2u173vhiqyu743u&dl=1
+
+
+# torch.Tensorboard logs
+use_tensorboard: true
+tensorboard_logs_folder: ./results/2000/tb_logs/
+
+# Path where data manifest files will be stored
+noise_annotation: SoundClassification/data/metadata/noise.csv
+rir_annotation: SoundClassification/data/metadata/rir.csv
+train_annotation: SoundClassification/manifest/train.json
+valid_annotation: SoundClassification/manifest/valid.json
+# test_annotation: !ref <save_folder>/manifest/test.json
+
+
+# To standardize results, UrbanSound8k has pre-separated samples into
+# 10 folds for multi-fold validation
+train_fold_nums: [1, 2, 3, 4]
+valid_fold_nums: [5]
+# test_fold_nums: [10]
+skip_manifest_creation: false
+
+ckpt_interval_minutes: 10 # save checkpoint every N min
+
+
+####################### Training Parameters ####################################
+number_of_epochs: 200
+batch_size: 16
+lr: 0.0001
+base_lr: 0.0000001
+max_lr: 0.0001
+step_size: 65000
+sample_rate: 16000
+dropout_prob: 0.2
+
+hpopt_mode:
+hpopt:
+
+# Feature parameters
+n_mels: 256
+left_frames: 0
+right_frames: 0
+deltas: false
+amp_to_db: true
+normalize: true
+
+# Number of classes
+out_n_neurons: 2
+
+# Data loader options
+shuffle: true
+num_workers: 4
+dataloader_options:
+  batch_size: 16
+  shuffle: true
+  num_workers: 4
+
+
+
+########################################################resnet18
+# Feature extraction and normalization
+compute_features: &id008 !new:torchaudio.transforms.MelSpectrogram
+  sample_rate: 16000
+  n_fft: 1024
+  win_length: 1024
+  hop_length: 256
+  normalized: true
+  center: true
+  pad_mode: reflect
+  power: 2.0
+  norm: slaney
+  n_mels: 256
+  mel_scale: htk
+
+# embedding_model: !new:crnn.Cnns
+# embedding_model: !new:crnn.Crnn
+embedding_model: &id001 !new:resnet.SELFMODEL
+# embedding_model: !new:cnn.Crnn
+# embedding_model: !new:bsnet.Conformer
+# embedding_model: !new:speechbrain.lobes.models.CRDNN.CRDNN
+
+classifier: &id009 !new:speechbrain.lobes.models.ECAPA_TDNN.Classifier
+  input_size: 192
+  out_neurons: 2
+
+
+
+#######################################################################
+
+
+
+epoch_counter: &id011 !new:speechbrain.utils.epoch_loop.EpochCounter
+  limit: 200
+
+use_pretrained_model: false
+pretrained_model_name: spkrec-ecapa-voxceleb
+pretrained_embedding_model_path: /home/taylor/UrbanSound8k/SoundClassification/model/embedding_model.ckpt
+pretrained_embedding_model: !new:speechbrain.utils.parameter_transfer.Pretrainer
+  collect_in: /home/taylor/UrbanSound8k/SoundClassification/model
+  loadables:
+    model: *id001
+  paths:
+    model: /home/taylor/UrbanSound8k/SoundClassification/model/embedding_model.ckpt
+
+
+
+# Speed perturbation
+speed_changes: &id002 [80, 90, 110, 120] # List of speed changes for time-stretching
+
+speed_perturb: &id003 !new:speechbrain.augment.time_domain.SpeedPerturb
+  orig_freq: 16000
+  speeds: *id002
+  device: cuda
+
+# Add noise to input signal
+snr_low: -20  # Min SNR for noise augmentation
+snr_high: -20  # Max SNR for noise augmentation
+
+add_noise: &id004 !new:speechbrain.augment.time_domain.AddNoise
+        # !ref <PitchShift>,
+  csv_file: SoundClassification/data/metadata/noise.csv
+  snr_low: -20
+  snr_high: -20
+  noise_sample_rate: 16000
+  clean_sample_rate: 16000
+  num_workers: 4
+
+
+# Add reverberation to input signal
+add_reverb: &id005 !new:speechbrain.augment.time_domain.AddReverb
+  csv_file: SoundClassification/data/metadata/rir.csv
+  reverb_sample_rate: 16000
+  clean_sample_rate: 16000
+  num_workers: 4
+
+
+# Frequency drop: randomly drops a number of frequency bands to zero.
+drop_freq_low: 1e-14  # Min frequency band dropout probability
+drop_freq_high: 1  # Max frequency band dropout probability
+drop_freq_count_low: 1  # Min number of frequency bands to drop
+drop_freq_count_high: 2  # Max number of frequency bands to drop
+drop_freq_width: 0.05  # Width of frequency bands to drop
+
+drop_freq: &id006 !new:speechbrain.augment.time_domain.DropFreq
+  drop_freq_low: 1e-14
+  drop_freq_high: 1
+  drop_freq_count_low: 1
+  drop_freq_count_high: 2
+  drop_freq_width: 0.05
+
+# Time drop: randomly drops a number of temporal chunks.
+drop_chunk_count_low: 1  # Min number of audio chunks to drop
+drop_chunk_count_high: 2  # Max number of audio chunks to drop
+drop_chunk_length_low: 8000  # Min length of audio chunks to drop
+drop_chunk_length_high: 16000  # Max length of audio chunks to drop
+
+drop_chunk: &id007 !new:speechbrain.augment.time_domain.DropChunk
+  drop_length_low: 8000
+  drop_length_high: 16000
+  drop_count_low: 1
+  drop_count_high: 2
+
+PitchShift: !new:torchaudio.transforms.PitchShift
+  sample_rate: 16000
+  n_steps: 2
+
+# Augmenter: Combines previously defined augmentations to perform data augmentation
+wav_augment: !new:speechbrain.augment.augmenter.Augmenter
+  parallel_augment: false
+  concat_original: false
+  repeat_augment: 1
+  shuffle_augmentations: true
+  min_augmentations: 3
+  max_augmentations: 5
+  augment_prob: 1
+  augmentations: [*id003, *id004, *id005, *id006, *id007]
+
+mean_var_norm: &id010 !new:speechbrain.processing.features.InputNormalization
+
+  norm_type: sentence
+  std_norm: false
+
+modules:
+  compute_features: *id008
+  embedding_model: *id001
+  classifier: *id009
+  mean_var_norm: *id010
+compute_cost: !new:speechbrain.nnet.losses.LogSoftmaxWrapper
+  loss_fn: !new:speechbrain.nnet.losses.AdditiveAngularMargin
+    margin: 0.2
+    scale: 30
+
+# compute_error: !name:speechbrain.nnet.losses.classification_error
+
+opt_class: !name:torch.optim.Adam
+  lr: 0.0001
+  weight_decay: 0.000002
+
+lr_annealing: !new:speechbrain.nnet.schedulers.CyclicLRScheduler
+  base_lr: 0.0000001
+  max_lr: 0.0001
+  step_size: 65000
+
+# Logging + checkpoints
+train_logger: !new:speechbrain.utils.train_logger.FileTrainLogger
+  save_file: ./results/2000/train_log.txt
+
+error_stats: !name:speechbrain.utils.metric_stats.MetricStats
+  metric: !name:speechbrain.nnet.losses.classification_error
+    reduction: batch
+
+checkpointer: !new:speechbrain.utils.checkpoints.Checkpointer
+  checkpoints_dir: ./results/2000/save
+  recoverables:
+    embedding_model: *id001
+    classifier: *id009
+    normalizer: *id010
+    counter: *id011
