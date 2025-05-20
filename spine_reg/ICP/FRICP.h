@@ -178,7 +178,7 @@ private:
     template <typename Derived1, typename Derived2, typename Derived3>
     AffineNd point_to_point(Eigen::MatrixBase<Derived1>& X,
                             Eigen::MatrixBase<Derived2>& Y,
-                            const Eigen::MatrixBase<Derived3>& w) { // 徐灏：w是每个点的权重矩阵，默认的
+                            const Eigen::MatrixBase<Derived3>& w) { // ：w是每个点的权重矩阵，默认的
         int dim = X.rows();
         /// Normalize weight vector
         Eigen::VectorXd w_normalized = w / w.sum();
@@ -195,7 +195,7 @@ private:
 
         for (int i = 0; i<dim; ++i) {
             // X.row(i) 为行向量，w_normalized为列向量
-            X_mean(i) = (X.row(i).array()*w_normalized.transpose().array()).sum();  // 徐灏：.array()后的矩阵乘法为对应元素相乘（数乘加权），默认的每个点的权重就是1，这里的w_normalized是归一化后的权重，直接得到的就是均值
+            X_mean(i) = (X.row(i).array()*w_normalized.transpose().array()).sum();  // ：.array()后的矩阵乘法为对应元素相乘（数乘加权），默认的每个点的权重就是1，这里的w_normalized是归一化后的权重，直接得到的就是均值
             Y_mean(i) = (Y.row(i).array()*w_normalized.transpose().array()).sum();
             //std::cout << X_mean(i) << std::endl;
             //std::cout << w_normalized.row(0) << std::endl;
@@ -203,7 +203,7 @@ private:
             //Y_mean(i) = Y.row(i).sum() / Y.cols();
             //std::cout << X_mean(i) << std::endl;
         }
-        X.colwise() -= X_mean;  // 徐灏：每一列都减去均值，完成 De-mean
+        X.colwise() -= X_mean;  // ：每一列都减去均值，完成 De-mean
         Y.colwise() -= Y_mean;
 
         //std::cout << X_mean << std::endl;
@@ -213,7 +213,7 @@ private:
         AffineNd transformation;
         //std::cout << w_normalized;
         //std::cout << X * Y.transpose() << std::endl;
-        MatrixXX sigma = X * w_normalized.asDiagonal() * Y.transpose(); // 徐灏：比一般的多了个 w_normalized.asDiagonal()，应该就是对角化加权，实测是否加上这个加权对于无权重的svd分解结果无影响
+        MatrixXX sigma = X * w_normalized.asDiagonal() * Y.transpose(); // ：比一般的多了个 w_normalized.asDiagonal()，应该就是对角化加权，实测是否加上这个加权对于无权重的svd分解结果无影响
         //std::cout << w_normalized.asDiagonal().rows() << " " << w_normalized.asDiagonal().cols() << std::endl;
         //std::cout << X * w_normalized.asDiagonal() * Y.transpose() << std::endl;
         //MatrixXX sigma = X * Y.transpose();
@@ -225,7 +225,7 @@ private:
             //transformation.linear() = svd.matrixV()*svd.matrixU().transpose() * S.asDiagonal();
         }
         else {
-            transformation.linear() = svd.matrixV()*svd.matrixU().transpose(); // 徐灏：写入旋转矩阵部分
+            transformation.linear() = svd.matrixV()*svd.matrixU().transpose(); // ：写入旋转矩阵部分
         }
         VectorN S = VectorN::Ones(dim); S(dim - 1) = -1.0;
         //std::cout << svd.matrixV() * S.asDiagonal() * svd.matrixU().transpose() << std::endl;
@@ -234,7 +234,7 @@ private:
         //std::cout << std::endl << svd.matrixV() * S.asDiagonal() << std::endl;
         //std::cout << std::endl << svd.matrixU() <<  std::endl;
         //std::cout << transformation.linear() << std::endl;
-        transformation.translation() = Y_mean - transformation.linear()*X_mean; // 徐灏：写入平移部分
+        transformation.translation() = Y_mean - transformation.linear()*X_mean; // ：写入平移部分
         /// Re-apply mean
         X.colwise() += X_mean;
         Y.colwise() += Y_mean;
@@ -618,7 +618,7 @@ public:
         else T = AffineNd::Identity();
         MatrixXX To1 = T.matrix();
         MatrixXX To2 = T.matrix();
-        int nPoints = X.cols(); // 徐灏：X是source，source的点数就是配准的点对数
+        int nPoints = X.cols(); // ：X是source，source的点数就是配准的点对数
 
         //Anderson Acc para
         AndersonAcceleration accelerator_;
@@ -648,18 +648,18 @@ public:
 #pragma omp parallel for
         for (int i = 0; i < X1.cols(); ++i) {
             VectorN cur_p1 = T * X1.col(i);
-            Q.col(i) = Y1.col(kdtree1.closest(cur_p1.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-            W[i] = (cur_p1 - Q.col(i)).norm();   // 徐灏：计算每对点的距离，并储存
+            Q.col(i) = Y1.col(kdtree1.closest(cur_p1.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+            W[i] = (cur_p1 - Q.col(i)).norm();   // ：计算每对点的距离，并储存
         }
         for (int i = 0; i < X2.cols(); ++i) {
             VectorN cur_p2 = T * X2.col(i);
-            Q.col(X1.cols() + i) = Y2.col(kdtree2.closest(cur_p2.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-            W[X1.cols() + i] = (cur_p2 - Q.col(X1.cols() + i)).norm();   // 徐灏：计算每对点的距离，并储存
+            Q.col(X1.cols() + i) = Y2.col(kdtree2.closest(cur_p2.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+            W[X1.cols() + i] = (cur_p2 - Q.col(X1.cols() + i)).norm();   // ：计算每对点的距离，并储存
         }
         for (int i = 0; i < X3.cols(); ++i) {
             VectorN cur_p3 = T * X3.col(i);
-            Q.col(X1.cols() + X2.cols() + i) = Y3.col(kdtree3.closest(cur_p3.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-            W[X1.cols() + X2.cols() + i] = (cur_p3 - Q.col(X1.cols() + X2.cols() + i)).norm();   // 徐灏：计算每对点的距离，并储存
+            Q.col(X1.cols() + X2.cols() + i) = Y3.col(kdtree3.closest(cur_p3.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+            W[X1.cols() + X2.cols() + i] = (cur_p3 - Q.col(X1.cols() + X2.cols() + i)).norm();   // ：计算每对点的距离，并储存
         }
 
 
@@ -686,8 +686,8 @@ public:
         
         //for (int i = 0; i<nPoints; ++i) {
         //    VectorN cur_p = T * X.col(i);
-        //    Q.col(i) = Y.col(kdtree.closest(cur_p.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-        //    W[i] = (cur_p - Q.col(i)).norm();   // 徐灏：计算每对点的距离，并储存
+        //    Q.col(i) = Y.col(kdtree.closest(cur_p.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+        //    W[i] = (cur_p - Q.col(i)).norm();   // ：计算每对点的距离，并储存
         //}
         if(par.f == ICP::WELSCH)
         {
@@ -716,9 +716,9 @@ public:
             {
                 iter_num++;
                 bool accept_aa = false;
-                energy = get_energy(par.f, W, nu1); // 徐灏：默认会得到 W 的二范数（W是norm后的，所以就是点对之间的平方距离）
+                energy = get_energy(par.f, W, nu1); // ：默认会得到 W 的二范数（W是norm后的，所以就是点对之间的平方距离）
                 
-//                if (par.use_AA) // 徐灏：这段会跳过
+//                if (par.use_AA) // ：这段会跳过
 //                {
 //                    if (energy < last_energy) {
 //                        last_energy = energy;
@@ -754,8 +754,8 @@ public:
                 if (par.print_energy)
                     std::cout << "icp iter = " << icp << ", Energy = " << last_energy << std::endl;
 
-                robust_weight(par.f, W, nu1);   // 徐灏：默认的方法将 W 全部变成1
-                // 徐灏：W是点云对应点的距离，这里通过robust_weight函数对这个距离进行了加权
+                robust_weight(par.f, W, nu1);   // ：默认的方法将 W 全部变成1
+                // ：W是点云对应点的距离，这里通过robust_weight函数对这个距离进行了加权
                 // Rotation and translation update
                 T = point_to_point(X, Q, W);
 
@@ -771,41 +771,41 @@ public:
 
                 // Find closest point
 #pragma omp parallel for
-                // 徐灏：更新新的T下的Q和W
+                // ：更新新的T下的Q和W
                 //for (int i = 0; i<nPoints; ++i) {
                 //    VectorN cur_p = T * X.col(i) ;
-                //    Q.col(i) = Y.col(kdtree.closest(cur_p.data())); // 徐灏：当前旋转矩阵的下一个Q，更新
-                //    W[i] = (cur_p - Q.col(i)).norm();   // 徐灏：更新W
+                //    Q.col(i) = Y.col(kdtree.closest(cur_p.data())); // ：当前旋转矩阵的下一个Q，更新
+                //    W[i] = (cur_p - Q.col(i)).norm();   // ：更新W
                 //}
                 for (int i = 0; i < X1.cols(); ++i) {
                     VectorN cur_p1 = T * X1.col(i);
-                    Q.col(i) = Y1.col(kdtree1.closest(cur_p1.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-                    W[i] = (cur_p1 - Q.col(i)).norm();   // 徐灏：计算每对点的距离，并储存
+                    Q.col(i) = Y1.col(kdtree1.closest(cur_p1.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+                    W[i] = (cur_p1 - Q.col(i)).norm();   // ：计算每对点的距离，并储存
                 }
                 for (int i = 0; i < X2.cols(); ++i) {
                     VectorN cur_p2 = T * X2.col(i);
-                    Q.col(X1.cols() + i) = Y2.col(kdtree2.closest(cur_p2.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-                    W[X1.cols() + i] = (cur_p2 - Q.col(X1.cols() + i)).norm();   // 徐灏：计算每对点的距离，并储存
+                    Q.col(X1.cols() + i) = Y2.col(kdtree2.closest(cur_p2.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+                    W[X1.cols() + i] = (cur_p2 - Q.col(X1.cols() + i)).norm();   // ：计算每对点的距离，并储存
                 }
                 for (int i = 0; i < X3.cols(); ++i) {
                     VectorN cur_p3 = T * X3.col(i);
-                    Q.col(X1.cols() + X2.cols() + i) = Y3.col(kdtree3.closest(cur_p3.data()));// 徐灏：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
-                    W[X1.cols() + X2.cols() + i] = (cur_p3 - Q.col(X1.cols() + X2.cols() + i)).norm();   // 徐灏：计算每对点的距离，并储存
+                    Q.col(X1.cols() + X2.cols() + i) = Y3.col(kdtree3.closest(cur_p3.data()));// ：Q是Y中与经过T旋转后的当前Q（cur_q） 最近的一个点
+                    W[X1.cols() + X2.cols() + i] = (cur_p3 - Q.col(X1.cols() + X2.cols() + i)).norm();   // ：计算每对点的距离，并储存
                 }
 
                 /// Stopping criteria
                 double stop2 = (T.matrix() - To2).norm();
                 //std::cout << "T change = " << stop2 << std::endl;
-                To2 = T.matrix(); // 徐灏：存储上一次的T
+                To2 = T.matrix(); // ：存储上一次的T
                 if(stop2 < par.stop)
                 {
                     break;
                 }
             }
-            // 徐灏：ICP迭代结束
+            // ：ICP迭代结束
             if(par.f!= ICP::WELSCH)
                 stop1 = true;
-            else // 徐灏：如果是 WELSCH 函数，在这里会对比 nu1 和 nu2 （WELSCH 函数的参数）的差距，如果大于阈值，就会重新迭代
+            else // ：如果是 WELSCH 函数，在这里会对比 nu1 和 nu2 （WELSCH 函数的参数）的差距，如果大于阈值，就会重新迭代
             {
                 stop1 = fabs(nu1 - nu2)<SAME_THRESHOLD? true: false;
                 nu1 = nu1*par.nu_alpha > nu2? nu1*par.nu_alpha : nu2;

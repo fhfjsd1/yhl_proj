@@ -40,7 +40,7 @@ void pointCloud_sample(std::string pointCloud_file_name, int sample_num);
 int main(int argc, char const ** argv)
 {
 #ifdef SAMPLE
-    //pointCloud_sample("G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_right.ply", 166);
+
     std::cout << "请输入需要下采样点文件路径：" << std::endl;
     char file_path_char[100];
     std::cin.getline(file_path_char, 100);
@@ -169,112 +169,28 @@ double FRICP_simulation(AffineNd T_simulation, ICP::Parameters& extern_pars, dou
     out_path = "./output/";
     //method = Method(0);
 
-    //std::string file_target1 = "G:\\硕士毕设\\代码\\colorICP_release_VS2022_new_命令行发行\\colorICP\\simulate_test\\output_target_colorPointClouds.obj";
-    //std::string file_target2 = "G:\\硕士毕设\\代码\\colorICP_release_VS2022_new_命令行发行\\colorICP\\simulate_test\\output_target_colorPointClouds.obj";
-    //std::string file_target3 = "G:\\硕士毕设\\代码\\colorICP_release_VS2022_new_命令行发行\\colorICP\\simulate_test\\output_target_colorPointClouds.obj";
-    //std::string file_source1 = "G:\\硕士毕设\\代码\\colorICP_release_VS2022_new_命令行发行\\colorICP\\simulate_test\\output_source_colorPointClouds.obj";
-    //std::string file_source2 = "G:\\硕士毕设\\代码\\colorICP_release_VS2022_new_命令行发行\\colorICP\\simulate_test\\output_target_colorPointClouds.obj";
-    //std::string file_source3 = "G:\\硕士毕设\\代码\\colorICP_release_VS2022_new_命令行发行\\colorICP\\simulate_test\\output_target_colorPointClouds.obj";
-
-    // 单类别
-    //std::string file_target1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
 
 #ifdef MULTI
-    // 多类别
-    //std::string file_target1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\多类别\\bunny_left.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\多类别\\bunny_middle.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\多类别\\bunny_right.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\多类别\\bunny_head_left.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\多类别\\bunny_head_middle.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\多类别\\bunny_head_right.ply";
+    
 
-    // 多类别
-    //std::string file_target1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_left.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_middle.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_right.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head_left.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head_middle.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head_right.ply";
-
-    // 头与头
-    //std::string file_target1 = "G:\\硕士毕设\\斯坦福兔子仿真\\多类别\\bunny_head_left.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\斯坦福兔子仿真\\多类别\\bunny_head_middle.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\斯坦福兔子仿真\\多类别\\bunny_head_right.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\斯坦福兔子仿真\\多类别\\bunny_head_left.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\斯坦福兔子仿真\\多类别\\bunny_head_middle.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\斯坦福兔子仿真\\多类别\\bunny_head_right.ply";
-
-    //std::string file_target1 = "G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_left.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_middle.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_right.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_left.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_middle.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\猴子头仿真\\多类别\\monkey_right.ply";
-
-    std::string file_target1 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey_left.ply";
-    std::string file_target2 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey_middle.ply";
-    std::string file_target3 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey_right.ply";
-    std::string file_source1 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey_left.ply";
-    std::string file_source2 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey_middle.ply";
-    std::string file_source3 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey_right.ply";
-    // 
-    // 效果不好
-    //std::string file_target1 = "G:\\硕士毕设\\3dmatch仿真\\多类别\\chair.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\3dmatch仿真\\多类别\\desk.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\3dmatch仿真\\多类别\\other.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\3dmatch仿真\\多类别\\chair.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\3dmatch仿真\\多类别\\desk.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\3dmatch仿真\\多类别\\other.ply";
-
-    //std::string file_target1 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\light.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\pillow.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\plant.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\light.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\pillow.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\plant.ply";
+    std::string file_target1 = "monkey_left.ply";
+    std::string file_target2 = "monkey_middle.ply";
+    std::string file_target3 = "monkey_right.ply";
+    std::string file_source1 = "monkey_left.ply";
+    std::string file_source2 = "monkey_middle.ply";
+    std::string file_source3 = "monkey_right.ply";
+    
 #endif // MULTI
 
 #ifdef SINGLE
-    // 单类别
-    //std::string file_target1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与头\\bunny_head.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与头\\bunny_head.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与头\\bunny_head.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与头\\bunny_head.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与头\\bunny_head.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与头\\bunny_head.ply";
+    
 
-    //std::string file_target1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\斯坦福兔子仿真\\头与身\\bunny_head.ply";
-
-    //std::string file_target1 = "G:\\硕士毕设\\猴子头仿真\\monkey.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\猴子头仿真\\monkey.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\猴子头仿真\\monkey.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\猴子头仿真\\monkey.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\猴子头仿真\\monkey.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\猴子头仿真\\monkey.ply";
-
-    //std::string file_target1 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\all_0.5.ply";
-    //std::string file_target2 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\all_0.5.ply";
-    //std::string file_target3 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\all_0.5.ply";
-    //std::string file_source1 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\all_0.5.ply";
-    //std::string file_source2 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\all_0.5.ply";
-    //std::string file_source3 = "G:\\硕士毕设\\Robust Reconstruction of Indoor Scenes\\all_0.5.ply";
-
-    std::string file_target1 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey.ply";
-    std::string file_target2 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey.ply";
-    std::string file_target3 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey.ply";
-    std::string file_source1 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey.ply";
-    std::string file_source2 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey.ply";
-    std::string file_source3 = "G:\\硕士毕设\\猴子头仿真\\多类别(178 485 154)\\monkey.ply";
+    std::string file_target1 = "monkey.ply";
+    std::string file_target2 = "monkey.ply";
+    std::string file_target3 = "monkey.ply";
+    std::string file_source1 = "monkey.ply";
+    std::string file_source2 = "monkey.ply";
+    std::string file_source3 = "monkey.ply";
 #endif // SINGLE
 
     //单类别
